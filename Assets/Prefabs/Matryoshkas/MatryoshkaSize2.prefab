@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5091870924108273129}
   - component: {fileID: 831530849009225251}
   - component: {fileID: 5252566559814096322}
+  - component: {fileID: 8636419613842359597}
   m_Layer: 0
   m_Name: MatryoshkaSize2
   m_TagString: Player
@@ -48,8 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   size: 2
   moveSpeed: 5
-  neighboringPlatforms: []
-  possiblePos: []
+  rotationSpeed: 5
   posOffset: {x: 0, y: 1.45, z: 0}
   isActive: 0
 --- !u!54 &5252566559814096322
@@ -79,6 +79,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!65 &8636419613842359597
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1748807761579950224}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3316767801964715275
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,7 +111,6 @@ GameObject:
   - component: {fileID: 4642695354551159193}
   - component: {fileID: 2468143423668088091}
   - component: {fileID: 5186591738921245907}
-  - component: {fileID: 6295095294336864020}
   m_Layer: 0
   m_Name: MatryoshkaMesh
   m_TagString: Player
@@ -163,24 +183,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &6295095294336864020
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3316767801964715275}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
