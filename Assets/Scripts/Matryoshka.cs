@@ -13,6 +13,8 @@ public class Matryoshka : MonoBehaviour
     public Vector3 posOffset = new (0, 0.95f, 0);
     public bool isActive = false;
     private LayerMask defaultMask, platformMask, obstacleMask;
+    private bool isEnteringBigger = false;
+    private Matryoshka parentMatryoshka;
 
     private void Awake()
     {
@@ -125,6 +127,13 @@ public class Matryoshka : MonoBehaviour
             transform.LookAt(targetPos);
             return;
         }
+        if (isEnteringBigger)
+        {
+            gameObject.SetActive(false);
+            parentMatryoshka.isActive = true;
+            isEnteringBigger = false;
+            parentMatryoshka = null;
+        }
         if (!isActive)
         {
             return;
@@ -148,19 +157,15 @@ public class Matryoshka : MonoBehaviour
                 {
                     if (hit.collider.CompareTag("Player") && hit.collider.transform != transform)
                     {
-                        Matryoshka matryoshka = hit.collider.transform.GetComponent<Matryoshka>();
-                        if (matryoshka.size - size == 1)
+                        parentMatryoshka = hit.collider.transform.GetComponent<Matryoshka>();
+                        if (parentMatryoshka.size - size == 1)
                         {
-                            matryoshka.childMatryoshka = this;
-                            matryoshka.isActive = true;
-                            targetPos = matryoshka.transform.position;
+                            parentMatryoshka.childMatryoshka = this;
+                            targetPos = parentMatryoshka.transform.position;
                             isActive = false;
-                            gameObject.SetActive(false);
+                            isEnteringBigger = true;
                             return;
                         }
-                    } else if (hit.collider.CompareTag("Lever"))
-                    {
-                        return;
                     }
                 }
             } else
