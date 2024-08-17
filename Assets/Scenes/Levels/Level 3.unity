@@ -21,7 +21,7 @@ RenderSettings:
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.5644784, g: 0.78113204, b: 0.73712426, a: 1}
-  m_AmbientEquatorColor: {r: 0.9083926, g: 0.7309007, b: 0.9245283, a: 1}
+  m_AmbientEquatorColor: {r: 0.8862745, g: 0.7882353, b: 0.89411765, a: 1}
   m_AmbientGroundColor: {r: 0.5149178, g: 0.70837605, b: 0.67244333, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 1
@@ -2345,6 +2345,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: ThinRailSize2
       objectReference: {fileID: 0}
+    - target: {fileID: 5290958890860305305, guid: dae70b36b698de44196dfab292cdc3ca,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3de638ade34b36f4791f8e2ec19c15d6, type: 2}
+    - target: {fileID: 6219701643942335755, guid: dae70b36b698de44196dfab292cdc3ca,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 3de638ade34b36f4791f8e2ec19c15d6, type: 2}
     - target: {fileID: 6575485391931767451, guid: dae70b36b698de44196dfab292cdc3ca,
         type: 3}
       propertyPath: m_LocalPosition.x
