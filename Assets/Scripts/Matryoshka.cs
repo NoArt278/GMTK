@@ -12,14 +12,14 @@ public class Matryoshka : MonoBehaviour
     private Matryoshka childMatryoshka;
     public Vector3 posOffset = new (0, 0.95f, 0);
     public bool isActive = false;
-    private LayerMask defaultMask;
-    private LayerMask platformMask;
+    private LayerMask defaultMask, platformMask, obstacleMask;
 
     private void Awake()
     {
         targetPos = transform.position;
         defaultMask = LayerMask.GetMask("Default");
         platformMask = LayerMask.GetMask("Platform");
+        obstacleMask = LayerMask.GetMask("Obstacles");
     }
 
     private void OnEnable()
@@ -140,7 +140,7 @@ public class Matryoshka : MonoBehaviour
             {
                 moveDir.z = moveInput.y;
             }
-            bool hitPlayer = false;
+
             RaycastHit[] hits = Physics.SphereCastAll(transform.position + moveDir * 2, Mathf.Max(size - 1, 0.5f), Vector3.down, size, defaultMask);
             if (hits.Length > 0)
             {
@@ -148,7 +148,6 @@ public class Matryoshka : MonoBehaviour
                 {
                     if (hit.collider.CompareTag("Player") && hit.collider.transform != transform)
                     {
-                        hitPlayer = true;
                         Matryoshka matryoshka = hit.collider.transform.GetComponent<Matryoshka>();
                         if (matryoshka.size - size == 1)
                         {
@@ -159,16 +158,23 @@ public class Matryoshka : MonoBehaviour
                             gameObject.SetActive(false);
                             return;
                         }
+                    } else if (hit.collider.CompareTag("Lever"))
+                    {
+                        return;
                     }
                 }
-            } 
-            if (!hitPlayer)
+            } else
             {
-                hits = Physics.SphereCastAll(transform.position + moveDir * 2, Mathf.Max(size - 1, 0.5f), Vector3.down, size, platformMask);
-                if (hits.Length >= Mathf.Pow(size, 2))
+                hits = Physics.SphereCastAll(transform.position + moveDir * 2, Mathf.Max(size - 1, 0.5f), Vector3.down, size, obstacleMask, QueryTriggerInteraction.Ignore);
+                if (hits.Length > 0)
                 {
-                    targetPos = transform.position + moveDir * 2;
+                    return;
                 }
+            } 
+            hits = Physics.SphereCastAll(transform.position + moveDir * 2, Mathf.Max(size - 1, 0.5f), Vector3.down, size, platformMask);
+            if (hits.Length >= Mathf.Pow(size, 2))
+            {
+                targetPos = transform.position + moveDir * 2;
             }
         }
     }

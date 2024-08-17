@@ -4,6 +4,7 @@ using UnityEngine;
 public class MovablePlatform : MonoBehaviour
 {
     public bool goDown;
+    public float downHeight, upHeight;
     private float moveSpeed = 50f;
     Coroutine moveCoroutine;
     
@@ -23,14 +24,14 @@ public class MovablePlatform : MonoBehaviour
         {
             while (transform.position.y > -50)
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, -50, transform.position.z), moveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, downHeight, transform.position.z), moveSpeed * Time.deltaTime);
                 yield return null;
             }
         } else
         {
             while (transform.position.y < 0)
             {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, 0, transform.position.z), moveSpeed * Time.deltaTime);
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, upHeight, transform.position.z), moveSpeed * Time.deltaTime);
                 yield return null;
             }
         }
