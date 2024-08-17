@@ -15,6 +15,7 @@ public class Matryoshka : MonoBehaviour
     private LayerMask defaultMask, platformMask, obstacleMask;
     private bool isEnteringBigger = false, justRotated = false;
     private Matryoshka parentMatryoshka;
+    private List<Vector3> targetPosBuffer = new List<Vector3>();
 
     private void Awake()
     {
@@ -137,6 +138,11 @@ public class Matryoshka : MonoBehaviour
         {
             return;
         }
+        if (targetPosBuffer.Count > 0)
+        {
+            targetPos = targetPosBuffer[0];
+            targetPosBuffer.RemoveAt(0);
+        }
         Vector2 moveInput = InputManager.playerInput.Player.Move.ReadValue<Vector2>();
         if (moveInput.x != 0 && !justRotated)
         {
@@ -161,6 +167,7 @@ public class Matryoshka : MonoBehaviour
                         {
                             parentMatryoshka.childMatryoshka = this;
                             targetPos = parentMatryoshka.transform.position;
+                            targetPosBuffer.Clear();
                             isActive = false;
                             isEnteringBigger = true;
                             return;
@@ -185,7 +192,7 @@ public class Matryoshka : MonoBehaviour
                 {
                     if (hit.collider.GetComponent<ThinRail>().size == size)
                     {
-                        targetPos = transform.position + transform.forward * 2 * moveInput.y;
+                        targetPosBuffer.Add(transform.position + transform.forward * 2 * moveInput.y);
                         return;
                     }
                     else
