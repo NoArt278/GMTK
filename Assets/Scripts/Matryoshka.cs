@@ -36,28 +36,28 @@ public class Matryoshka : MonoBehaviour
     {
         if (childMatryoshka != null)
         {
-            RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward * size * 2, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
             if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in front
             {
                 GetReleasePos(hits);
             }
             else
             {
-                hits = Physics.SphereCastAll(transform.position + transform.right * size * 2, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
+                hits = Physics.SphereCastAll(transform.position + transform.right * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
                 if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in right side
                 {
                     GetReleasePos(hits);
                 }
                 else
                 {
-                    hits = Physics.SphereCastAll(transform.position + transform.right * -size * 2, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
+                    hits = Physics.SphereCastAll(transform.position + transform.right * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
                     if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in left side
                     {
                         GetReleasePos(hits);
                     }
                     else
                     {
-                        hits = Physics.SphereCastAll(transform.position + transform.forward * -size * 2, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
+                        hits = Physics.SphereCastAll(transform.position + transform.forward * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
                         if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in back side
                         {
                             GetReleasePos(hits);
