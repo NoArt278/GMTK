@@ -141,14 +141,14 @@ public class Matryoshka : MonoBehaviour
         if (moveInput.x != 0 && !justRotated)
         {
             justRotated = true;
-            transform.Rotate(new Vector3(0, 90 * moveInput.x, 0));
-        }
-        else if (moveInput.x == 0)
+            transform.Rotate(new Vector3(0, 90 * Mathf.Sign(moveInput.x), 0));
+        } else if (moveInput.x == 0)
         {
             justRotated = false;
         }
         if (moveInput.y != 0)
         {
+            moveInput.y = Mathf.Sign(moveInput.y);
             RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward * 2 * moveInput.y, Mathf.Max(size - 1, 0.5f), Vector3.down, size, defaultMask);
             if (hits.Length > 0)
             {
@@ -167,14 +167,15 @@ public class Matryoshka : MonoBehaviour
                         }
                     }
                 }
-            } else
+            }
+            else
             {
                 hits = Physics.SphereCastAll(transform.position + transform.forward * 2 * moveInput.y, Mathf.Max(size - 1, 0.5f), Vector3.down, size, obstacleMask, QueryTriggerInteraction.Ignore);
                 if (hits.Length > 0)
                 {
                     return;
                 }
-            } 
+            }
             hits = Physics.SphereCastAll(transform.position + transform.forward * 2 * moveInput.y, Mathf.Max(size - 1, 0.5f), Vector3.down, size, platformMask);
             List<RaycastHit> hitsList = hits.ToList<RaycastHit>();
             List<RaycastHit> removeList = new List<RaycastHit>();
@@ -186,7 +187,8 @@ public class Matryoshka : MonoBehaviour
                     {
                         targetPos = transform.position + transform.forward * 2 * moveInput.y;
                         return;
-                    } else
+                    }
+                    else
                     {
                         removeList.Add(hit);
                     }
