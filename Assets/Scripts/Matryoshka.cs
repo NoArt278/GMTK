@@ -10,6 +10,7 @@ public class Matryoshka : MonoBehaviour
     public List<Platform> neighboringPlatforms;
     private Matryoshka childMatryoshka;
     public Vector3 posOffset = new (0, 0.95f, 0);
+    public bool isActive = false;
 
     private void Awake()
     {
@@ -20,6 +21,10 @@ public class Matryoshka : MonoBehaviour
 
     void Update()
     {
+        if (!isActive)
+        {
+            return;
+        }
         if (transform.position != targetPos)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
