@@ -5,18 +5,18 @@ public class Matryoshka : MonoBehaviour
 {
     public int size;
     private Vector3 targetPos;
-    [SerializeField] private Transform startPlatform;
     public float moveSpeed = 5f;
-    public List<Platform> neighboringPlatforms;
+    public List<Transform> neighboringPlatforms;
+    public List<Vector3> possiblePos;
     private Matryoshka childMatryoshka;
     public Vector3 posOffset = new (0, 0.95f, 0);
     public bool isActive = false;
 
     private void Awake()
     {
-        neighboringPlatforms = new List<Platform>();
-        targetPos = startPlatform.position + posOffset;
-        transform.position = targetPos;
+        neighboringPlatforms = new List<Transform>();
+        possiblePos = new List<Vector3>();
+        targetPos = transform.position;
     }
 
     void Update()
@@ -30,73 +30,115 @@ public class Matryoshka : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
             return;
         }
+        CalculatePossiblePositions();
         Vector2 moveInput = InputManager.playerInput.Player.Move.ReadValue<Vector2>();
         if (moveInput.x < 0) // Move left
         {
-            neighboringPlatforms.ForEach(platform =>
+            possiblePos.ForEach(pos =>
                 {
-                    if (platform.transform.position.x < transform.position.x && platform.transform.position.z == transform.position.z)
+                    if (pos.x < transform.position.x && Mathf.Abs(pos.z - transform.position.z) < 0.1f)
                     {
-                        targetPos = platform.transform.position + posOffset;
+                        targetPos = pos + posOffset;
+                        return;
                     }
                 }
             );
         }
         else if (moveInput.x > 0) // Move right
         {
-            neighboringPlatforms.ForEach(platform =>
+            possiblePos.ForEach(pos =>
                 {
-                    if (platform.transform.position.x > transform.position.x && platform.transform.position.z == transform.position.z)
+                    if (pos.x > transform.position.x && Mathf.Abs(pos.z - transform.position.z) < 0.1f)
                     {
-                        targetPos = platform.transform.position + posOffset;
+                        targetPos = pos + posOffset;
+                        return;
                     }
                 }
             );
         }
         else if (moveInput.y > 0) // Move up
         {
-            neighboringPlatforms.ForEach(platform =>
-            {
-                if (platform.transform.position.z > transform.position.z && platform.transform.position.x == transform.position.x)
+            possiblePos.ForEach(pos =>
                 {
-                    targetPos = platform.transform.position + posOffset;
+                    if (pos.z > transform.position.z && Mathf.Abs(pos.x - transform.position.x) < 0.1f)
+                    {
+                        targetPos = pos + posOffset;
+                    }
                 }
-            }
             );
         }
         else if (moveInput.y < 0) // Move down
         {
-            neighboringPlatforms.ForEach(platform =>
+            possiblePos.ForEach(pos =>
                 {
-                    if (platform.transform.position.z < transform.position.z && platform.transform.position.x == transform.position.x)
+                    if (pos.z < transform.position.z && Mathf.Abs(pos.x - transform.position.x) < 0.1f)
                     {
-                        targetPos = platform.transform.position + posOffset;
+                        targetPos = pos + posOffset;
                     }
                 }
             );
         }
     }
 
+    private void CalculatePossiblePositions()
+    {
+        possiblePos.Clear();
+        List<Transform> currPlatformGroup = new List<Transform>();
+        foreach (Transform platform in neighboringPlatforms)
+        {
+            if (size == 1)
+            {
+                possiblePos.Add(platform.position);
+                continue;
+            }
+            currPlatformGroup.Clear();
+            currPlatformGroup.Add(platform);
+            foreach (Transform otherPlatform in neighboringPlatforms)
+            {
+                if (Vector3.Distance(otherPlatform.position, platform.position) <= Mathf.Sqrt(Mathf.Pow(size, 2) * 2) && otherPlatform != platform)
+                {
+                    currPlatformGroup.Add(otherPlatform);
+                }
+                if (currPlatformGroup.Count == Mathf.Pow(size, 2))
+                {
+                    Vector3 avgPos = Vector3.zero;
+                    currPlatformGroup.ForEach(currPlat =>
+                    {
+                        avgPos += currPlat.position;
+                    }
+                    );
+                    avgPos /= currPlatformGroup.Count;
+                    Debug.Log(Vector3.Distance(avgPos, transform.position));
+                    if (!possiblePos.Contains(avgPos) && Mathf.Abs(Vector3.Distance(avgPos + posOffset, transform.position) - 2) < 0.2f)
+                    {
+                        possiblePos.Add(avgPos);
+                    }
+                    currPlatformGroup.Clear();
+                    currPlatformGroup.Add(platform);
+                }
+            }
+        }
+    }
+
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Platform")
+        if (other.CompareTag("Platform"))
         {
-            Platform otherPlatform = other.GetComponent<Platform>();
-            if (!neighboringPlatforms.Contains(otherPlatform) && otherPlatform.size == size)
+            if (!neighboringPlatforms.Contains(other.transform))
             {
-                neighboringPlatforms.Add(other.GetComponent<Platform>());
+                neighboringPlatforms.Add(other.transform);
+                
             }
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Platform" && neighboringPlatforms.Contains(other.GetComponent<Platform>()))
+        if (other.CompareTag("Platform"))
         {
-            Platform otherPlatform = other.GetComponent<Platform>();
-            if (neighboringPlatforms.Contains(otherPlatform))
+            if (neighboringPlatforms.Contains(other.transform))
             {
-                neighboringPlatforms.Remove(other.GetComponent<Platform>());
+                neighboringPlatforms.Remove(other.transform);
             }
         }
     }
