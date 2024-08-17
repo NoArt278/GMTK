@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -174,7 +176,27 @@ public class Matryoshka : MonoBehaviour
                 }
             } 
             hits = Physics.SphereCastAll(transform.position + transform.forward * 2 * moveInput.y, Mathf.Max(size - 1, 0.5f), Vector3.down, size, platformMask);
-            if (hits.Length >= Mathf.Pow(size, 2))
+            List<RaycastHit> hitsList = hits.ToList<RaycastHit>();
+            List<RaycastHit> removeList = new List<RaycastHit>();
+            foreach (var hit in hitsList)
+            {
+                if (hit.collider.CompareTag("Rail"))
+                {
+                    if (hit.collider.GetComponent<ThinRail>().size == size)
+                    {
+                        targetPos = transform.position + transform.forward * 2 * moveInput.y;
+                        return;
+                    } else
+                    {
+                        removeList.Add(hit);
+                    }
+                }
+            }
+            foreach (var hit in removeList)
+            {
+                hitsList.Remove(hit);
+            }
+            if (hitsList.Count >= Mathf.Pow(size, 2))
             {
                 targetPos = transform.position + transform.forward * 2 * moveInput.y;
             }
