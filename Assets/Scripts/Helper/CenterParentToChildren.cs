@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class CenterParentToChildren : MonoBehaviour
 {
+    #if UNITY_EDITOR
     [Button("Center Pivot")]
     public void CenterPivot()
     {
@@ -35,4 +36,5 @@ public class CenterParentToChildren : MonoBehaviour
 
         Debug.Log("Parent centered to children.");
     }
+    #endif
 }
