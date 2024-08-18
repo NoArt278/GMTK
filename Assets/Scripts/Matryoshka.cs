@@ -53,14 +53,26 @@ public class Matryoshka : MonoBehaviour
     {
         if (childMatryoshka != null && isActive)
         {
+            bool hitRail = false;
             List<RaycastHit> hits = Physics.SphereCastAll(transform.position + transform.forward * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask).ToList();
             for (int i=0; i<hits.Count; i++)
             {
                 if (hits[i].collider.CompareTag("Rail")) {
-                    hits.RemoveAt(i);
+                    ThinRail thinRail = hits[i].collider.gameObject.GetComponent<ThinRail>();
+                    if (thinRail.size == childMatryoshka.size)
+                    {
+                        RaycastHit currHit = hits[i];
+                        hits.Clear();
+                        hits.Add(currHit);
+                        hitRail = true;
+                        break;
+                    } else
+                    {
+                        hits.RemoveAt(i);
+                    }
                 }
             }
-            if (hits.Count >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in front
+            if (hits.Count >= Mathf.Pow(childMatryoshka.size, 2) || hitRail) // Search for platform in front
             {
                 GetReleasePos(hits, transform.forward);
             }
@@ -117,15 +129,7 @@ public class Matryoshka : MonoBehaviour
 
     private void GetReleasePos(List<RaycastHit> hits, Vector3 lookDir)
     {
-        animator.SetBool("OpenMouth", true);
-        childMatryoshka.gameObject.SetActive(true);
-        childMatryoshka.transform.position = transform.position;
-        if (childMatryoshka.scaleCoroutine != null)
-        {
-            StopCoroutine(childMatryoshka.scaleCoroutine);
-        }
-        childMatryoshka.scaleCoroutine = StartCoroutine(childMatryoshka.ScaleSelf(false));
-        isActive = false;
+        bool canRelease = false;
         if (childMatryoshka.size % 2 == 0)
         {
             Vector3 averagePos = Vector3.zero;
@@ -158,21 +162,39 @@ public class Matryoshka : MonoBehaviour
                 }
             }
             childMatryoshka.targetPos = averagePos + childMatryoshka.posOffset;
+            canRelease = true;
         }
         else
         {
             foreach(var hit in hits)
             {
-                if (Vector3.Distance(hit.collider.transform.position, transform.position) > size)
+                Vector3 dest = new Vector3(hit.collider.transform.position.x, transform.position.y, hit.collider.transform.position.z);
+                if (Vector3.Distance(dest, transform.position) > size/2 && Vector3.Distance(dest, transform.position) < size * 2)
                 {
                     childMatryoshka.targetPos = hit.collider.transform.position + childMatryoshka.posOffset;
+                    canRelease = true;
                     break;
                 }
             }
         }
-        childMatryoshka.transform.LookAt(lookDir * 3 + transform.position);
-        childMatryoshka.isActive = true;
-        childMatryoshka = null;
+        if (canRelease)
+        {
+            animator.SetBool("OpenMouth", true);
+            if (childMatryoshka.scaleCoroutine != null)
+            {
+                StopCoroutine(childMatryoshka.scaleCoroutine);
+            }
+            childMatryoshka.scaleCoroutine = StartCoroutine(childMatryoshka.ScaleSelf(false));
+            isActive = false;
+            childMatryoshka.gameObject.SetActive(true);
+            childMatryoshka.transform.position = transform.position;
+            childMatryoshka.transform.LookAt(lookDir * 3 + transform.position);
+            childMatryoshka.isActive = true;
+            childMatryoshka = null;
+        } else
+        {
+            Debug.Log("Can't release");
+        }
     }
 
     private IEnumerator ScaleSelf (bool toSmall)
