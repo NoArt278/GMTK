@@ -53,29 +53,56 @@ public class Matryoshka : MonoBehaviour
     {
         if (childMatryoshka != null && isActive)
         {
-            RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
-            if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in front
+            List<RaycastHit> hits = Physics.SphereCastAll(transform.position + transform.forward * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask).ToList();
+            for (int i=0; i<hits.Count; i++)
+            {
+                if (hits[i].collider.CompareTag("Rail")) {
+                    hits.RemoveAt(i);
+                }
+            }
+            if (hits.Count >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in front
             {
                 GetReleasePos(hits, transform.forward);
             }
             else
             {
-                hits = Physics.SphereCastAll(transform.position + transform.right * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
-                if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in right side
+                hits = Physics.SphereCastAll(transform.position + transform.right * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask).ToList();
+                for (int i = 0; i < hits.Count; i++)
+                {
+                    if (hits[i].collider.CompareTag("Rail"))
+                    {
+                        hits.RemoveAt(i);
+                    }
+                }
+                if (hits.Count >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in right side
                 {
                     GetReleasePos(hits, transform.right);
                 }
                 else
                 {
-                    hits = Physics.SphereCastAll(transform.position + transform.right * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
-                    if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in left side
+                    hits = Physics.SphereCastAll(transform.position + transform.right * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask).ToList();
+                    for (int i = 0; i < hits.Count; i++)
+                    {
+                        if (hits[i].collider.CompareTag("Rail"))
+                        {
+                            hits.RemoveAt(i);
+                        }
+                    }
+                    if (hits.Count >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in left side
                     {
                         GetReleasePos(hits, transform.right * -1);
                     }
                     else
                     {
-                        hits = Physics.SphereCastAll(transform.position + transform.forward * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
-                        if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in back side
+                        hits = Physics.SphereCastAll(transform.position + transform.forward * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask).ToList();
+                        for (int i = 0; i < hits.Count; i++)
+                        {
+                            if (hits[i].collider.CompareTag("Rail"))
+                            {
+                                hits.RemoveAt(i);
+                            }
+                        }
+                        if (hits.Count >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in back side
                         {
                             GetReleasePos(hits, transform.forward * -1);
                         } else
@@ -88,7 +115,7 @@ public class Matryoshka : MonoBehaviour
         }
     }
 
-    private void GetReleasePos(RaycastHit[] hits, Vector3 lookDir)
+    private void GetReleasePos(List<RaycastHit> hits, Vector3 lookDir)
     {
         animator.SetBool("OpenMouth", true);
         childMatryoshka.gameObject.SetActive(true);
@@ -106,7 +133,7 @@ public class Matryoshka : MonoBehaviour
             {
                 averagePos += hit.collider.transform.position;
             }
-            averagePos /= hits.Length;
+            averagePos /= hits.Count;
             if (Mathf.RoundToInt(averagePos.x) % 2 == 0)
             {
                 RaycastHit[] hits2 = Physics.SphereCastAll(averagePos + Vector3.right, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
@@ -134,17 +161,9 @@ public class Matryoshka : MonoBehaviour
         }
         else
         {
-            foreach (var hit in hits)
-            {
-                Vector3 dest = new(hit.collider.transform.position.x, transform.position.y, hit.collider.transform.position.z);
-                if (Vector3.Distance(transform.position, dest) >= size)
-                {
-                    childMatryoshka.targetPos = hit.collider.transform.position + childMatryoshka.posOffset;
-                    break;
-                }
-            }
+            childMatryoshka.targetPos = hits[0].collider.transform.position + childMatryoshka.posOffset;
         }
-        childMatryoshka.transform.LookAt(lookDir + transform.position);
+        childMatryoshka.transform.LookAt(lookDir * 3 + transform.position);
         childMatryoshka.isActive = true;
         childMatryoshka = null;
     }
