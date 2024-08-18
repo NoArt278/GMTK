@@ -134,7 +134,15 @@ public class Matryoshka : MonoBehaviour
         }
         else
         {
-            childMatryoshka.targetPos = hits[0].collider.transform.position + childMatryoshka.posOffset;
+            foreach (var hit in hits)
+            {
+                Vector3 dest = new(hit.collider.transform.position.x, transform.position.y, hit.collider.transform.position.z);
+                if (Vector3.Distance(transform.position, dest) >= size)
+                {
+                    childMatryoshka.targetPos = hit.collider.transform.position + childMatryoshka.posOffset;
+                    break;
+                }
+            }
         }
         childMatryoshka.isActive = true;
         childMatryoshka = null;
