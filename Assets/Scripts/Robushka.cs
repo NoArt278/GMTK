@@ -1,0 +1,374 @@
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using DG.Tweening;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class Robushka : MonoBehaviour
+{
+    public int size;
+    // private Vector3 targetPos;
+    public float moveSpeed = 5f, rotationSpeed = 5f;
+    private Robushka childMatryoshka;
+    public Vector3 posOffset = new (0, 0.95f, 0);
+    public bool isActive = false;
+    public Transform layPosition;
+    private LayerMask defaultMask, platformMask, obstacleMask;
+    private bool justRotated = false;
+    private float fallSpeed = 25f;
+    private Robushka parentMatryoshka;
+    private Animator animator;
+    private Coroutine scaleCoroutine;
+    private LevelManager levelManager;
+
+    private float selfNeededGridSize;
+    private float childNeededGridSize;
+    private bool onAction = false;
+
+    private void Awake()
+    {
+        // targetPos = transform.position;
+        defaultMask = LayerMask.GetMask("Default");
+        platformMask = LayerMask.GetMask("Platform");
+        obstacleMask = LayerMask.GetMask("Obstacles");
+
+        animator = GetComponentInChildren<Animator>();
+        if (!isActive)
+        {
+            animator.SetBool("OpenMouth", true);
+        }
+
+        selfNeededGridSize = Mathf.Pow(size, 2);
+        childNeededGridSize = Mathf.Pow(size - 1, 2);
+    }
+
+    private void Start()
+    {
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+    }
+
+    private void OnEnable()
+    {
+        InputManager.playerInput.Player.Release.performed += ReleaseChildMatryoshka;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.playerInput.Player.Release.performed -= ReleaseChildMatryoshka;
+    }
+
+    private void ReleaseChildMatryoshka(InputAction.CallbackContext context)
+    {
+        if (childMatryoshka == null || !isActive || onAction) return;
+
+        float neededSize = childNeededGridSize;
+
+        // Check for the left available platforms
+        List<RaycastHit> hits = Physics.SphereCastAll(
+            transform.position + transform.forward * ((size - 1) * 2 + 1) + transform.right * 1,
+            Mathf.Max(size - 1.5f, 0.5f),
+            Vector3.down, 
+            size, platformMask
+        ).ToList();
+
+        // Check if rails is found
+        foreach (var hit in hits)
+        {
+            if (hit.collider.CompareTag("Rail"))
+            {
+                if (hit.collider.GetComponent<ThinRail>().size == childMatryoshka.size)
+                {
+                    ReleaseToRail(hit.collider.transform.position, transform.forward);
+                    return;
+                } else {
+                    hits.Remove(hit);
+                }
+            }
+        }
+
+        if (hits.Count >= neededSize)
+        {
+            ReleaseToPlatforms(hits, transform.forward);
+            return;
+        }
+
+        // Check for the right available platforms
+        hits = Physics.SphereCastAll(
+            transform.position + transform.forward * ((size - 1) * 2 + 1) + transform.right * -1,
+            Mathf.Max(size - 1.5f, 0.5f),
+            Vector3.down, 
+            size, platformMask
+        ).ToList();
+
+        // Check if rails is found
+        foreach (var hit in hits)
+        {
+            if (hit.collider.CompareTag("Rail"))
+            {
+                if (hit.collider.GetComponent<ThinRail>().size == childMatryoshka.size)
+                {
+                    ReleaseToRail(hit.collider.transform.position, transform.forward);
+                    return;
+                } else {
+                    hits.Remove(hit);
+                }
+            }
+        }
+
+        if (hits.Count >= neededSize)
+        {
+            ReleaseToPlatforms(hits, transform.forward);
+            return;
+        }
+
+        Debug.Log("Can't release");
+    }
+
+    private void ReleaseToPlatforms(List<RaycastHit> hits, Vector3 lookDir)
+    {
+        bool canRelease = false;
+        if (childMatryoshka.size % 2 == 0)
+        {
+            Vector3 averagePos = Vector3.zero;
+            foreach (RaycastHit hit in hits)
+            {
+                averagePos += hit.collider.transform.position;
+            }
+            averagePos /= hits.Count;
+
+            childMatryoshka.MoveTo(averagePos + childMatryoshka.posOffset);
+            canRelease = true;
+        }
+        else
+        {
+            foreach(var hit in hits)
+            {
+                Vector3 dest = new Vector3(hit.collider.transform.position.x, transform.position.y, hit.collider.transform.position.z);
+                if (Vector3.Distance(dest, transform.position) > size/2 && Vector3.Distance(dest, transform.position) < size * 2)
+                {
+                    childMatryoshka.MoveTo(hit.collider.transform.position + childMatryoshka.posOffset);
+                    canRelease = true;
+                    break;
+                }
+            }
+        }
+
+        if (canRelease) {
+            DetachChild(lookDir);
+        } else {
+            Debug.Log("Can't release");
+        }
+    }
+
+    private void ReleaseToRail(Vector3 pos, Vector3 lookDir) {
+        childMatryoshka.MoveTo(pos + childMatryoshka.posOffset);
+        DetachChild(lookDir);
+    }
+
+    private void DetachChild(Vector3 lookDir) {
+        animator.SetBool("OpenMouth", true);
+        if (childMatryoshka.scaleCoroutine != null)
+        {
+            StopCoroutine(childMatryoshka.scaleCoroutine);
+        }
+
+        childMatryoshka.scaleCoroutine = StartCoroutine(childMatryoshka.ScaleSelf(false));
+        isActive = false;
+        childMatryoshka.gameObject.SetActive(true);
+        childMatryoshka.transform.position = transform.position;
+        childMatryoshka.transform.LookAt(lookDir * 3 + transform.position);
+        childMatryoshka.isActive = true;
+        childMatryoshka = null;
+    }
+
+    private IEnumerator ScaleSelf (bool toSmall)
+    {
+        if (toSmall)
+        {
+            while (transform.localScale.x > 0)
+            {
+                transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, rotationSpeed * size * Time.deltaTime);
+                yield return null;
+            }
+        } else {
+            while (transform.localScale.x < size + 0.38f)
+            {
+                transform.localScale = Vector3.MoveTowards(transform.localScale, new Vector3(size+0.38f, size + 0.38f, size + 0.38f), rotationSpeed * size * Time.deltaTime);
+                yield return null;
+            }
+        }
+        scaleCoroutine = null;
+    }
+
+    private void MoveToParent() {
+        onAction = true;
+        isActive = false;
+        parentMatryoshka.animator.SetBool("OpenMouth", false);
+        Sequence sequence = DOTween.Sequence();
+
+        transform.DOMove(parentMatryoshka.layPosition.position, 0.5f).OnComplete(() => {
+            parentMatryoshka.childMatryoshka = this;
+            parentMatryoshka.isActive = true;
+            onAction = false;
+            gameObject.SetActive(false);
+        });
+
+        sequence.Join(
+            transform.DOScale(Vector3.zero, 0.5f)
+        );
+
+        sequence.Play();
+    }
+
+    private void DieLoop() {
+        if (transform.position.y > -100)
+        {
+            transform.position = Vector3.MoveTowards(
+                transform.position, 
+                new Vector3(transform.position.x, -100, transform.position.z), 
+                fallSpeed * Time.deltaTime
+            );
+        }
+    }
+
+    private void Die() {
+        onAction = true;
+        float duration = 100 / fallSpeed;
+        transform.DOMoveY(-100, duration).SetEase(Ease.Linear);
+    }
+
+    // private void MoveLoop() {
+    //     transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
+    // }
+
+    public void MoveTo(Vector3 targetPos) {
+        onAction = true;
+        float duration = 2 / moveSpeed;
+        transform.DOMove(targetPos, duration).OnComplete(() => {
+            onAction = false;
+        }).SetEase(Ease.OutSine);
+    }
+
+    private void OnMeetAnotherRobushka() {
+        if (parentMatryoshka.size - size == 1)
+        {
+            if (parentMatryoshka.size == levelManager.maxSize)
+            {
+                levelManager.LevelComplete();
+            }
+
+            MoveToParent();
+        }
+    }
+
+    void Update()
+    {
+        // Check if the robushka is on a platform
+        RaycastHit[] platforms = Physics.SphereCastAll(
+            transform.position + Vector3.up * size / 2, Mathf.Max(size - 1, 0.5f), 
+            Vector3.down, 
+            5, platformMask
+        );
+
+        if (platforms.Length == 0)
+        {
+            isActive = false;
+            Die();
+            return;
+        }
+
+        if (onAction) return;
+        if (!isActive) { return; }
+
+        Vector2 moveInput = InputManager.playerInput.Player.Move.ReadValue<Vector2>();
+        if (moveInput.x != 0 && !justRotated)
+        {
+            justRotated = true;
+            onAction = true;
+            transform.DORotate(
+                transform.rotation.eulerAngles + new Vector3(0, 90 * moveInput.x, 0),
+                0.05f
+            ).OnComplete(() => {
+                onAction = false;
+            });
+        } 
+        else if (moveInput.x == 0)
+        {
+            justRotated = false;
+        }
+
+        if (moveInput.y != 0)
+        {
+            moveInput.y = Mathf.Sign(moveInput.y);
+            RaycastHit[] hits = Physics.SphereCastAll(
+                transform.position + transform.forward * 2 * moveInput.y, 
+                Mathf.Max(size - 1, 0.5f), Vector3.down, size, defaultMask
+            );
+
+            // Check for other robushka
+            if (hits.Length > 0)
+            {
+                foreach (RaycastHit hit in hits)
+                {
+                    if (hit.collider.CompareTag("Player") && hit.collider.transform != transform)
+                    {
+                        parentMatryoshka = hit.collider.transform.GetComponent<Robushka>();
+                        OnMeetAnotherRobushka();
+                        return;
+                    }
+                }
+            }
+
+            hits = Physics.SphereCastAll(
+                transform.position + transform.forward * 2 * moveInput.y, 
+                Mathf.Max(size - 1, 0.5f), 
+                Vector3.down, 
+                size, platformMask
+            );
+
+            List<RaycastHit> hitList = hits.ToList();
+
+            // Check for railings
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.CompareTag("Rail"))
+                {
+                    if (hit.collider.GetComponent<ThinRail>().size == size)
+                    {
+                        // targetPos = transform.position + 2 * moveInput.y * transform.forward;
+                        MoveTo(transform.position + 2 * moveInput.y * transform.forward);
+                        return;
+                    } else {
+                        hitList.Remove(hit);
+                    }
+                }
+            }
+
+            if (hits.Length >= selfNeededGridSize)
+            {
+                // targetPos = transform.position + 2 * moveInput.y * transform.forward;
+                MoveTo(transform.position + 2 * moveInput.y * transform.forward);
+                return;
+            }
+        }
+    }
+
+    private void OnDrawGizmos() {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(
+            transform.position + transform.forward * ((size - 1) * 2 + 1) + transform.right * 1,
+            Mathf.Max(size - 1.5f, 0.5f)
+        );
+        Gizmos.DrawWireSphere(
+            transform.position + transform.forward * ((size - 1) * 2 + 1) + transform.right * -1,
+            Mathf.Max(size - 1.5f, 0.5f)
+        );
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(
+            transform.position + transform.forward * 2,
+            Mathf.Max(size - 1, 0.5f)
+        );
+    }
+}

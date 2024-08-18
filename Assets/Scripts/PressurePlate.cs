@@ -9,7 +9,7 @@ public class Lever : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (other.transform.GetComponent<Matryoshka>().isActive)
+            if (other.transform.GetComponent<Robushka>().isActive)
             {
                 foreach (var platform in movablePlatforms)
                 {
