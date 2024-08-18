@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,6 +17,8 @@ public class Matryoshka : MonoBehaviour
     private bool isEnteringBigger = false, justRotated = false;
     private Matryoshka parentMatryoshka;
     private List<Vector3> targetPosBuffer = new List<Vector3>();
+    private Animator animator;
+    private Coroutine scaleCoroutine;
 
     private void Awake()
     {
@@ -23,6 +26,12 @@ public class Matryoshka : MonoBehaviour
         defaultMask = LayerMask.GetMask("Default");
         platformMask = LayerMask.GetMask("Platform");
         obstacleMask = LayerMask.GetMask("Obstacles");
+
+        animator = GetComponentInChildren<Animator>();
+        if (!isActive)
+        {
+            animator.SetBool("OpenMouth", true);
+        }
     }
 
     private void OnEnable()
@@ -76,8 +85,14 @@ public class Matryoshka : MonoBehaviour
 
     private void GetReleasePos(RaycastHit[] hits)
     {
+        animator.SetBool("OpenMouth", true);
         childMatryoshka.gameObject.SetActive(true);
         childMatryoshka.transform.position = transform.position;
+        if (childMatryoshka.scaleCoroutine != null)
+        {
+            StopCoroutine(childMatryoshka.scaleCoroutine);
+        }
+        childMatryoshka.scaleCoroutine = StartCoroutine(childMatryoshka.ScaleSelf(false));
         isActive = false;
         if (childMatryoshka.size % 2 == 0)
         {
@@ -118,6 +133,26 @@ public class Matryoshka : MonoBehaviour
         }
         childMatryoshka.isActive = true;
         childMatryoshka = null;
+    }
+
+    private IEnumerator ScaleSelf (bool toSmall)
+    {
+        if (toSmall)
+        {
+            while (transform.localScale.x > 0)
+            {
+                transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, rotationSpeed * Time.deltaTime);
+                yield return null;
+            }
+        } else
+        {
+            while (transform.localScale.x < size + 0.38f)
+            {
+                transform.localScale = Vector3.MoveTowards(transform.localScale, new Vector3(size+0.38f, size + 0.38f, size + 0.38f), rotationSpeed * Time.deltaTime);
+                yield return null;
+            }
+        }
+        scaleCoroutine = null;
     }
 
     void Update()
@@ -165,6 +200,12 @@ public class Matryoshka : MonoBehaviour
                         parentMatryoshka = hit.collider.transform.GetComponent<Matryoshka>();
                         if (parentMatryoshka.size - size == 1)
                         {
+                            if (scaleCoroutine != null)
+                            {
+                                StopCoroutine(scaleCoroutine);
+                            }
+                            scaleCoroutine = StartCoroutine(ScaleSelf(true));
+                            parentMatryoshka.animator.SetBool("OpenMouth", false);
                             parentMatryoshka.childMatryoshka = this;
                             targetPos = parentMatryoshka.transform.position;
                             targetPosBuffer.Clear();
