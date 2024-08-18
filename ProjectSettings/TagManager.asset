@@ -5,8 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - Platform
-  - Lever
   - Rail
+  - Interactable
   layers:
   - Default
   - TransparentFX

@@ -211,17 +211,9 @@ public class Matryoshka : MonoBehaviour
                             targetPosBuffer.Clear();
                             isActive = false;
                             isEnteringBigger = true;
-                            return;
                         }
+                        return;
                     }
-                }
-            }
-            else
-            {
-                hits = Physics.SphereCastAll(transform.position + transform.forward * 2 * moveInput.y, Mathf.Max(size - 1, 0.5f), Vector3.down, size, obstacleMask, QueryTriggerInteraction.Ignore);
-                if (hits.Length > 0)
-                {
-                    return;
                 }
             }
             hits = Physics.SphereCastAll(transform.position + transform.forward * 2 * moveInput.y, Mathf.Max(size - 1, 0.5f), Vector3.down, size, platformMask);
