@@ -8,13 +8,13 @@ public class Matryoshka : MonoBehaviour
 {
     public int size;
     private Vector3 targetPos;
-    public float moveSpeed = 5f;
-    public float rotationSpeed = 5f;
+    public float moveSpeed = 5f, rotationSpeed = 5f;
     private Matryoshka childMatryoshka;
     public Vector3 posOffset = new (0, 0.95f, 0);
     public bool isActive = false;
     private LayerMask defaultMask, platformMask, obstacleMask;
-    private bool isEnteringBigger = false, justRotated = false;
+    private bool isEnteringBigger = false, justRotated = false, isDead = false;
+    private float fallSpeed = 25f;
     private Matryoshka parentMatryoshka;
     private Animator animator;
     private Coroutine scaleCoroutine;
@@ -219,6 +219,22 @@ public class Matryoshka : MonoBehaviour
 
     void Update()
     {
+        if (isDead)
+        {
+            if (transform.position.y > -100)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, -100, transform.position.z), fallSpeed * Time.deltaTime);
+            }
+            return;
+        }
+        RaycastHit[] platforms = Physics.SphereCastAll(transform.position + Vector3.up * size/2, Mathf.Max(size - 1, 0.5f), Vector3.down, 5, platformMask);
+        if (platforms.Length == 0)
+        {
+            targetPos = transform.position;
+            isActive = false;
+            isDead = true;
+            return;
+        }
         if (transform.position != targetPos)
         {
             transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
