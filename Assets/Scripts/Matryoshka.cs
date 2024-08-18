@@ -46,7 +46,7 @@ public class Matryoshka : MonoBehaviour
 
     private void ReleaseChildMatryoshka(InputAction.CallbackContext context)
     {
-        if (childMatryoshka != null)
+        if (childMatryoshka != null && isActive)
         {
             RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
             if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in front
@@ -141,14 +141,14 @@ public class Matryoshka : MonoBehaviour
         {
             while (transform.localScale.x > 0)
             {
-                transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, rotationSpeed * Time.deltaTime);
+                transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, rotationSpeed * size * Time.deltaTime);
                 yield return null;
             }
         } else
         {
             while (transform.localScale.x < size + 0.38f)
             {
-                transform.localScale = Vector3.MoveTowards(transform.localScale, new Vector3(size+0.38f, size + 0.38f, size + 0.38f), rotationSpeed * Time.deltaTime);
+                transform.localScale = Vector3.MoveTowards(transform.localScale, new Vector3(size+0.38f, size + 0.38f, size + 0.38f), rotationSpeed * size * Time.deltaTime);
                 yield return null;
             }
         }
