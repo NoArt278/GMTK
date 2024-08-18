@@ -4,20 +4,27 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static int maxLevel = 10;
+    public static GameManager instance;
+
+    private void Awake()
+    {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+        }
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+    }
     private void OnEnable()
     {
-        InputManager.playerInput.Player.Reset.performed += ResetLevel;
-        InputManager.playerInput.Enable();
+        if (instance == this)
+            InputManager.playerInput.Enable();
     }
 
     private void OnDisable()
     {
-        InputManager.playerInput.Player.Reset.performed -= ResetLevel;
-        InputManager.playerInput.Enable();
-    }
-
-    private void ResetLevel(InputAction.CallbackContext context)
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        if (instance == this) 
+            InputManager.playerInput.Disable();
     }
 }

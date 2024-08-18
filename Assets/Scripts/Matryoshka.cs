@@ -19,6 +19,7 @@ public class Matryoshka : MonoBehaviour
     private List<Vector3> targetPosBuffer = new List<Vector3>();
     private Animator animator;
     private Coroutine scaleCoroutine;
+    private LevelManager levelManager;
 
     private void Awake()
     {
@@ -32,6 +33,11 @@ public class Matryoshka : MonoBehaviour
         {
             animator.SetBool("OpenMouth", true);
         }
+    }
+
+    private void Start()
+    {
+        levelManager = GameObject.Find("LevelManager").GetComponent<LevelManager>();
     }
 
     private void OnEnable()
@@ -165,7 +171,10 @@ public class Matryoshka : MonoBehaviour
         if (isEnteringBigger)
         {
             gameObject.SetActive(false);
-            parentMatryoshka.isActive = true;
+            if (parentMatryoshka.size != levelManager.maxSize)
+            {
+                parentMatryoshka.isActive = true;
+            }
             isEnteringBigger = false;
             parentMatryoshka = null;
         }
@@ -200,6 +209,10 @@ public class Matryoshka : MonoBehaviour
                         parentMatryoshka = hit.collider.transform.GetComponent<Matryoshka>();
                         if (parentMatryoshka.size - size == 1)
                         {
+                            if (parentMatryoshka.size == levelManager.maxSize)
+                            {
+                                levelManager.LevelComplete();
+                            }
                             if (scaleCoroutine != null)
                             {
                                 StopCoroutine(scaleCoroutine);
