@@ -56,28 +56,28 @@ public class Matryoshka : MonoBehaviour
             RaycastHit[] hits = Physics.SphereCastAll(transform.position + transform.forward * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
             if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in front
             {
-                GetReleasePos(hits);
+                GetReleasePos(hits, transform.forward);
             }
             else
             {
                 hits = Physics.SphereCastAll(transform.position + transform.right * size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
                 if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in right side
                 {
-                    GetReleasePos(hits);
+                    GetReleasePos(hits, transform.right);
                 }
                 else
                 {
                     hits = Physics.SphereCastAll(transform.position + transform.right * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
                     if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in left side
                     {
-                        GetReleasePos(hits);
+                        GetReleasePos(hits, transform.right * -1);
                     }
                     else
                     {
                         hits = Physics.SphereCastAll(transform.position + transform.forward * -size, Mathf.Max(childMatryoshka.size - 1, 0.5f), Vector3.down, size, platformMask);
                         if (hits.Length >= Mathf.Pow(childMatryoshka.size, 2)) // Search for platform in back side
                         {
-                            GetReleasePos(hits);
+                            GetReleasePos(hits, transform.forward * -1);
                         } else
                         {
                             Debug.Log("Can't release");
@@ -88,7 +88,7 @@ public class Matryoshka : MonoBehaviour
         }
     }
 
-    private void GetReleasePos(RaycastHit[] hits)
+    private void GetReleasePos(RaycastHit[] hits, Vector3 lookDir)
     {
         animator.SetBool("OpenMouth", true);
         childMatryoshka.gameObject.SetActive(true);
@@ -144,6 +144,7 @@ public class Matryoshka : MonoBehaviour
                 }
             }
         }
+        childMatryoshka.transform.LookAt(lookDir + transform.position);
         childMatryoshka.isActive = true;
         childMatryoshka = null;
     }
