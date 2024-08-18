@@ -52,7 +52,6 @@ MonoBehaviour:
   rotationSpeed: 5
   posOffset: {x: 0, y: 0.42, z: 0}
   isActive: 1
-  layPosition: {fileID: 1805501371726029134}
 --- !u!54 &2878987492429865567
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -192,12 +191,6 @@ PrefabInstance:
 --- !u!4 &1433293240306952819 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7018822558637966804, guid: b6e00241e4bd5b34ba000728c683f636,
-    type: 3}
-  m_PrefabInstance: {fileID: 8251660449480421287}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &1805501371726029134 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7750031522981105385, guid: b6e00241e4bd5b34ba000728c683f636,
     type: 3}
   m_PrefabInstance: {fileID: 8251660449480421287}
   m_PrefabAsset: {fileID: 0}

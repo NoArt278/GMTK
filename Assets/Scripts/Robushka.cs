@@ -160,14 +160,16 @@ public class Robushka : MonoBehaviour
     }
 
     private void ReleaseToRail(Vector3 pos, Vector3 lookDir) {
-        childMatryoshka.MoveTo(pos + childMatryoshka.posOffset);
+        Vector3 targetPos = pos + childMatryoshka.posOffset;
+        targetPos = new Vector3(targetPos.x, transform.position.y, targetPos.z);
+        childMatryoshka.MoveTo(targetPos);
         DetachChild(lookDir);
     }
 
     private void DetachChild(Vector3 lookDir) {
         animator.SetBool("OpenMouth", true);
 
-        childMatryoshka.transform.DOScale(Vector3.one * size, 0.5f);
+        childMatryoshka.transform.DOScale(Vector3.one * (size - 1), 0.5f);
         isActive = false;
         childMatryoshka.gameObject.SetActive(true);
         childMatryoshka.transform.position = transform.position;

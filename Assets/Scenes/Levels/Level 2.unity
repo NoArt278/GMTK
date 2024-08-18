@@ -814,7 +814,7 @@ PrefabInstance:
     - target: {fileID: 6930289366766112619, guid: c62ec552d22d7d54bb559e67bec8ada9,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.01
+      value: 0.42
       objectReference: {fileID: 0}
     - target: {fileID: 6930289366766112619, guid: c62ec552d22d7d54bb559e67bec8ada9,
         type: 3}
@@ -862,8 +862,7 @@ PrefabInstance:
       value: MatryoshkaSize3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 5232365716315866949, guid: c62ec552d22d7d54bb559e67bec8ada9, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c62ec552d22d7d54bb559e67bec8ada9, type: 3}
@@ -3780,25 +3779,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 831530849009225251, guid: ae008955bd7e4d340854db5b6ca5fde4,
-        type: 3}
-      propertyPath: isActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 831530849009225251, guid: ae008955bd7e4d340854db5b6ca5fde4,
-        type: 3}
-      propertyPath: startPlatform
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 1748807761579950224, guid: ae008955bd7e4d340854db5b6ca5fde4,
         type: 3}
       propertyPath: m_Name
       value: MatryoshkaSize2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1748807761579950224, guid: ae008955bd7e4d340854db5b6ca5fde4,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5091870924108273129, guid: ae008955bd7e4d340854db5b6ca5fde4,
         type: 3}
@@ -3808,7 +3792,7 @@ PrefabInstance:
     - target: {fileID: 5091870924108273129, guid: ae008955bd7e4d340854db5b6ca5fde4,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.62
+      value: 0.42
       objectReference: {fileID: 0}
     - target: {fileID: 5091870924108273129, guid: ae008955bd7e4d340854db5b6ca5fde4,
         type: 3}
@@ -3851,8 +3835,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 3316767801964715275, guid: ae008955bd7e4d340854db5b6ca5fde4, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ae008955bd7e4d340854db5b6ca5fde4, type: 3}
@@ -3869,21 +3852,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MatryoshkaSize1
       objectReference: {fileID: 0}
-    - target: {fileID: 1247537163395450959, guid: 874062ef7bd8f3344a592f004bc42894,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3227732653976733647, guid: 874062ef7bd8f3344a592f004bc42894,
-        type: 3}
-      propertyPath: isActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3227732653976733647, guid: 874062ef7bd8f3344a592f004bc42894,
-        type: 3}
-      propertyPath: startPlatform
-      value: 
-      objectReference: {fileID: 1289246033}
     - target: {fileID: 7577410763893772070, guid: 874062ef7bd8f3344a592f004bc42894,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3892,7 +3860,7 @@ PrefabInstance:
     - target: {fileID: 7577410763893772070, guid: 874062ef7bd8f3344a592f004bc42894,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.17
+      value: 0.42
       objectReference: {fileID: 0}
     - target: {fileID: 7577410763893772070, guid: 874062ef7bd8f3344a592f004bc42894,
         type: 3}
@@ -3935,8 +3903,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 1873661063759966335, guid: 874062ef7bd8f3344a592f004bc42894, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 874062ef7bd8f3344a592f004bc42894, type: 3}
