@@ -13,13 +13,11 @@ public class Robushka : MonoBehaviour
     private Robushka childMatryoshka;
     public Vector3 posOffset = new (0, 0.95f, 0);
     public bool isActive = false;
-    public Transform layPosition;
     private LayerMask defaultMask, platformMask, obstacleMask;
     private bool justRotated = false;
     private float fallSpeed = 25f;
     private Robushka parentMatryoshka;
     private Animator animator;
-    private Coroutine scaleCoroutine;
     private LevelManager levelManager;
 
     private float selfNeededGridSize;
@@ -168,12 +166,8 @@ public class Robushka : MonoBehaviour
 
     private void DetachChild(Vector3 lookDir) {
         animator.SetBool("OpenMouth", true);
-        if (childMatryoshka.scaleCoroutine != null)
-        {
-            StopCoroutine(childMatryoshka.scaleCoroutine);
-        }
 
-        childMatryoshka.scaleCoroutine = StartCoroutine(childMatryoshka.ScaleSelf(false));
+        childMatryoshka.transform.DOScale(Vector3.one * size, 0.5f);
         isActive = false;
         childMatryoshka.gameObject.SetActive(true);
         childMatryoshka.transform.position = transform.position;
@@ -182,32 +176,13 @@ public class Robushka : MonoBehaviour
         childMatryoshka = null;
     }
 
-    private IEnumerator ScaleSelf (bool toSmall)
-    {
-        if (toSmall)
-        {
-            while (transform.localScale.x > 0)
-            {
-                transform.localScale = Vector3.MoveTowards(transform.localScale, Vector3.zero, rotationSpeed * size * Time.deltaTime);
-                yield return null;
-            }
-        } else {
-            while (transform.localScale.x < size + 0.38f)
-            {
-                transform.localScale = Vector3.MoveTowards(transform.localScale, new Vector3(size+0.38f, size + 0.38f, size + 0.38f), rotationSpeed * size * Time.deltaTime);
-                yield return null;
-            }
-        }
-        scaleCoroutine = null;
-    }
-
     private void MoveToParent() {
         onAction = true;
         isActive = false;
         parentMatryoshka.animator.SetBool("OpenMouth", false);
         Sequence sequence = DOTween.Sequence();
 
-        transform.DOMove(parentMatryoshka.layPosition.position, 0.5f).OnComplete(() => {
+        transform.DOMove(parentMatryoshka.transform.position, 0.5f).OnComplete(() => {
             parentMatryoshka.childMatryoshka = this;
             parentMatryoshka.isActive = true;
             onAction = false;
@@ -221,26 +196,11 @@ public class Robushka : MonoBehaviour
         sequence.Play();
     }
 
-    private void DieLoop() {
-        if (transform.position.y > -100)
-        {
-            transform.position = Vector3.MoveTowards(
-                transform.position, 
-                new Vector3(transform.position.x, -100, transform.position.z), 
-                fallSpeed * Time.deltaTime
-            );
-        }
-    }
-
     private void Die() {
         onAction = true;
         float duration = 100 / fallSpeed;
         transform.DOMoveY(-100, duration).SetEase(Ease.Linear);
     }
-
-    // private void MoveLoop() {
-    //     transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
-    // }
 
     public void MoveTo(Vector3 targetPos) {
         onAction = true;
@@ -288,7 +248,7 @@ public class Robushka : MonoBehaviour
             onAction = true;
             transform.DORotate(
                 transform.rotation.eulerAngles + new Vector3(0, 90 * moveInput.x, 0),
-                0.05f
+                0.2f
             ).OnComplete(() => {
                 onAction = false;
             });
