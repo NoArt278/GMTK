@@ -850,11 +850,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6618427817431286927, guid: c62ec552d22d7d54bb559e67bec8ada9,
-        type: 3}
-      propertyPath: posOffset.y
-      value: 0.42
-      objectReference: {fileID: 0}
     - target: {fileID: 6930289366766112619, guid: c62ec552d22d7d54bb559e67bec8ada9,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3719,11 +3714,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 831530849009225251, guid: ae008955bd7e4d340854db5b6ca5fde4,
         type: 3}
-      propertyPath: posOffset.y
-      value: 0.42
-      objectReference: {fileID: 0}
-    - target: {fileID: 831530849009225251, guid: ae008955bd7e4d340854db5b6ca5fde4,
-        type: 3}
       propertyPath: startPlatform
       value: 
       objectReference: {fileID: 0}
@@ -3815,11 +3805,6 @@ PrefabInstance:
         type: 3}
       propertyPath: isActive
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3227732653976733647, guid: 874062ef7bd8f3344a592f004bc42894,
-        type: 3}
-      propertyPath: posOffset.y
-      value: 0.42
       objectReference: {fileID: 0}
     - target: {fileID: 3227732653976733647, guid: 874062ef7bd8f3344a592f004bc42894,
         type: 3}
