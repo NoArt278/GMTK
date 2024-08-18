@@ -20,9 +20,9 @@ RenderSettings:
   m_FogDensity: 0.01
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
-  m_AmbientSkyColor: {r: 0.5644784, g: 0.78113204, b: 0.73712426, a: 1}
-  m_AmbientEquatorColor: {r: 0.8862745, g: 0.7882353, b: 0.89411765, a: 1}
-  m_AmbientGroundColor: {r: 0.5149178, g: 0.70837605, b: 0.67244333, a: 1}
+  m_AmbientSkyColor: {r: 0.435849, g: 1, b: 0.8871698, a: 1}
+  m_AmbientEquatorColor: {r: 0.91798055, g: 0.7940706, b: 0.9254902, a: 1}
+  m_AmbientGroundColor: {r: 0.58472764, g: 0.82641506, b: 0.77807754, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 1
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
@@ -3474,7 +3474,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!64 &1481814118
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3517,7 +3517,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: b4a9a7819e7bf4f458c9533d481b1ec1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
