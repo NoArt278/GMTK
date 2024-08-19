@@ -71,16 +71,16 @@ public class Robushka : MonoBehaviour
         ).ToList();
 
         // Check if rails is found
-        foreach (var hit in hits)
+        for (int i = 0; i< hits.Count; i++)
         {
-            if (hit.collider.CompareTag("Rail"))
+            if (hits[i].collider.CompareTag("Rail"))
             {
-                if (hit.collider.GetComponent<ThinRail>().size == childMatryoshka.size)
+                if (hits[i].collider.GetComponent<ThinRail>().size == childMatryoshka.size)
                 {
-                    ReleaseToRail(hit.collider.transform.position, transform.forward);
+                    ReleaseToRail(hits[i].collider.transform.position, transform.forward);
                     return;
                 } else {
-                    hits.Remove(hit);
+                    hits.RemoveAt(i);
                 }
             }
         }
@@ -100,16 +100,16 @@ public class Robushka : MonoBehaviour
         ).ToList();
 
         // Check if rails is found
-        foreach (var hit in hits)
+        for (int i = 0; i < hits.Count; i++)
         {
-            if (hit.collider.CompareTag("Rail"))
+            if (hits[i].collider.CompareTag("Rail"))
             {
-                if (hit.collider.GetComponent<ThinRail>().size == childMatryoshka.size)
+                if (hits[i].collider.GetComponent<ThinRail>().size == childMatryoshka.size)
                 {
-                    ReleaseToRail(hit.collider.transform.position, transform.forward);
+                    ReleaseToRail(hits[i].collider.transform.position, transform.forward);
                     return;
                 } else {
-                    hits.Remove(hit);
+                    hits.RemoveAt(i);
                 }
             }
         }
@@ -226,6 +226,8 @@ public class Robushka : MonoBehaviour
 
     void Update()
     {
+        if (onAction) return;
+
         // Check if the robushka is on a platform
         RaycastHit[] platforms = Physics.SphereCastAll(
             transform.position + Vector3.up * size / 2, Mathf.Max(size - 1, 0.5f), 
@@ -240,12 +242,12 @@ public class Robushka : MonoBehaviour
             return;
         }
 
-        if (onAction) return;
         if (!isActive) { return; }
 
         Vector2 moveInput = InputManager.playerInput.Player.Move.ReadValue<Vector2>();
         if (moveInput.x != 0 && !justRotated)
         {
+            moveInput.x = Mathf.Sign(moveInput.x); // Prevent values that are not one
             justRotated = true;
             onAction = true;
             transform.DORotate(
@@ -254,6 +256,7 @@ public class Robushka : MonoBehaviour
             ).OnComplete(() => {
                 onAction = false;
             });
+            return;
         } 
         else if (moveInput.x == 0)
         {
@@ -292,22 +295,23 @@ public class Robushka : MonoBehaviour
             List<RaycastHit> hitList = hits.ToList();
 
             // Check for railings
-            foreach (RaycastHit hit in hits)
+            for (int i = 0; i < hitList.Count; i++)
             {
-                if (hit.collider.CompareTag("Rail"))
+                if (hitList[i].collider.CompareTag("Rail"))
                 {
-                    if (hit.collider.GetComponent<ThinRail>().size == size)
+                    if (hitList[i].collider.GetComponent<ThinRail>().size == size)
                     {
-                        // targetPos = transform.position + 2 * moveInput.y * transform.forward;
                         MoveTo(transform.position + 2 * moveInput.y * transform.forward);
                         return;
-                    } else {
-                        hitList.Remove(hit);
+                    }
+                    else
+                    {
+                        hitList.RemoveAt(i);
                     }
                 }
             }
 
-            if (hits.Length >= selfNeededGridSize)
+            if (hitList.Count >= selfNeededGridSize)
             {
                 // targetPos = transform.position + 2 * moveInput.y * transform.forward;
                 MoveTo(transform.position + 2 * moveInput.y * transform.forward);
