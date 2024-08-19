@@ -58,4 +58,7 @@ public class GameManager : MonoBehaviour
         mixer.SetFloat("BGMCutoff", 22000f);
         checkIsPlaying = null;
     }
+
+    public float bgmVolume { get => bgm.volume; set => bgm.volume = Mathf.Clamp(value, 0, 1); }
+    public float sfxVolume { get => sfx.volume; set => sfx.volume = Mathf.Clamp(value, 0, 1); }
 }

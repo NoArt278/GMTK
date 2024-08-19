@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 public class LevelManager : MonoBehaviour
 {
     public int maxSize;
-    [SerializeField] private GameObject levelCompleteUI;
+    [SerializeField] private SidePanel levelCompleteUI;
     private GameManager gameManager;
 
     private void Awake()
@@ -25,7 +25,7 @@ public class LevelManager : MonoBehaviour
 
     public void LevelComplete()
     {
-        levelCompleteUI.SetActive(true);
+        levelCompleteUI.ShowClearUI();
         gameManager.CompleteLevel();
     }
 
@@ -47,5 +47,10 @@ public class LevelManager : MonoBehaviour
     public void NextLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+
+    public void ExitLevel()
+    {
+        SceneManager.LoadScene(0);
     }
 }
