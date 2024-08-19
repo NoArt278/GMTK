@@ -303,7 +303,7 @@ public class Robushka : MonoBehaviour
 
             hits = Physics.SphereCastAll(
                 transform.position + transform.forward * 2 * moveInput.y, 
-                Mathf.Max(size - 1, 0.5f), 
+                Mathf.Max(size - 1.2f, 0.5f), 
                 Vector3.down, 
                 size, platformMask
             );
@@ -350,7 +350,7 @@ public class Robushka : MonoBehaviour
         Gizmos.color = Color.green;
         Gizmos.DrawWireSphere(
             transform.position + transform.forward * 2,
-            Mathf.Max(size - 1, 0.5f)
+            Mathf.Max(size - 1.2f, 0.5f)
         );
     }
 }
