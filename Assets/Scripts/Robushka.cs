@@ -199,7 +199,10 @@ public class Robushka : MonoBehaviour
 
         transform.DOMove(parentMatryoshka.transform.position, 0.5f).OnComplete(() => {
             parentMatryoshka.childMatryoshka = this;
-            parentMatryoshka.isActive = true;
+            if (parentMatryoshka.size != levelManager.maxSize)
+            {
+                parentMatryoshka.isActive = true;
+            }
             onAction = false;
             gameObject.SetActive(false);
         });
