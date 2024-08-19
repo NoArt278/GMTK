@@ -6,6 +6,12 @@ public class LevelManager : MonoBehaviour
 {
     public int maxSize;
     [SerializeField] private GameObject levelCompleteUI;
+    private GameManager gameManager;
+
+    private void Awake()
+    {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+    }
 
     private void OnEnable()
     {
@@ -20,6 +26,12 @@ public class LevelManager : MonoBehaviour
     public void LevelComplete()
     {
         levelCompleteUI.SetActive(true);
+        gameManager.CompleteLevel();
+    }
+
+    public void ActivateCutoff(AudioSource source)
+    {
+        gameManager.ActivateCutoff(source);
     }
 
     private void ResetLevelWithInput(InputAction.CallbackContext context)

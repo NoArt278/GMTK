@@ -5,10 +5,10 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(AudioSource))]
 public class Robushka : MonoBehaviour
 {
     public int size;
-    // private Vector3 targetPos;
     public float moveSpeed = 5f, rotationSpeed = 5f;
     private Robushka childMatryoshka;
     public Vector3 posOffset = new (0, 0.95f, 0);
@@ -24,9 +24,13 @@ public class Robushka : MonoBehaviour
     private float childNeededGridSize;
     private bool onAction = false;
 
+    [SerializeField] private AudioClip fallSfx, enterSfx, exitSfx, cantReleaseSfx;
+    private AudioSource sfxSource;
+
     private void Awake()
     {
-        // targetPos = transform.position;
+        sfxSource = GetComponent<AudioSource>();
+
         defaultMask = LayerMask.GetMask("Default");
         platformMask = LayerMask.GetMask("Platform");
         obstacleMask = LayerMask.GetMask("Obstacles");
@@ -121,6 +125,9 @@ public class Robushka : MonoBehaviour
         }
 
         Debug.Log("Can't release");
+        sfxSource.clip = cantReleaseSfx;
+        sfxSource.Play();
+        levelManager.ActivateCutoff(sfxSource);
     }
 
     private void ReleaseToPlatforms(List<RaycastHit> hits, Vector3 lookDir)
@@ -156,6 +163,9 @@ public class Robushka : MonoBehaviour
             DetachChild(lookDir);
         } else {
             Debug.Log("Can't release");
+            sfxSource.clip = cantReleaseSfx;
+            sfxSource.Play();
+            levelManager.ActivateCutoff(sfxSource);
         }
     }
 
@@ -180,6 +190,9 @@ public class Robushka : MonoBehaviour
     }
 
     private void DetachChild(Vector3 lookDir) {
+        sfxSource.clip = exitSfx;
+        sfxSource.Play();
+        levelManager.ActivateCutoff(sfxSource);
         animator.SetBool("OpenMouth", true);
 
         childMatryoshka.transform.DOScale(Vector3.one * (size - 1), 0.5f);
@@ -212,12 +225,18 @@ public class Robushka : MonoBehaviour
         );
 
         sequence.Play();
+        sfxSource.clip = enterSfx;
+        sfxSource.Play();
+        levelManager.ActivateCutoff(sfxSource);
     }
 
     private void Die() {
         onAction = true;
         float duration = 100 / fallSpeed;
         transform.DOMoveY(-100, duration).SetEase(Ease.Linear);
+        sfxSource.clip = fallSfx;
+        sfxSource.Play();
+        levelManager.ActivateCutoff(sfxSource);
     }
 
     public void MoveTo(Vector3 targetPos) {
