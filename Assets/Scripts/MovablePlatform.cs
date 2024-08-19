@@ -1,4 +1,4 @@
-using System.Collections;
+using DG.Tweening;
 using UnityEngine;
 
 public class MovablePlatform : MonoBehaviour
@@ -6,35 +6,30 @@ public class MovablePlatform : MonoBehaviour
     public bool goDown;
     public float downHeight, upHeight;
     private float moveSpeed = 50f;
-    Coroutine moveCoroutine;
+    Tween moveTween;
     
     public void TriggerMove()
     {
-        if (moveCoroutine != null)
+        if (moveTween != null)
         {
-            StopCoroutine(moveCoroutine);
+            moveTween.Kill();
+            moveTween = null;
         }
-        moveCoroutine = StartCoroutine(MovePlatform());
-        goDown = !goDown;
-    }
-
-    IEnumerator MovePlatform()
-    {
         if (goDown)
         {
-            while (transform.position.y > -50)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, downHeight, transform.position.z), moveSpeed * Time.deltaTime);
-                yield return null;
-            }
+            moveTween = transform.DOMove(new Vector3(transform.position.x, downHeight, transform.position.z), 0.8f).SetEase(Ease.InOutQuart).
+                OnComplete(() =>
+                {
+                    moveTween = null;
+                });
         } else
         {
-            while (transform.position.y < 0)
-            {
-                transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, upHeight, transform.position.z), moveSpeed * Time.deltaTime);
-                yield return null;
-            }
+            moveTween = transform.DOMove(new Vector3(transform.position.x, upHeight, transform.position.z), 0.8f).SetEase(Ease.InOutQuart).
+                OnComplete(() =>
+                {
+                    moveTween = null;
+                });
         }
-        moveCoroutine = null;
+        goDown = !goDown;
     }
 }
