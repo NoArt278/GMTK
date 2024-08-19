@@ -161,6 +161,19 @@ public class Robushka : MonoBehaviour
 
     private void ReleaseToRail(Vector3 pos, Vector3 lookDir) {
         Vector3 targetPos = pos + childMatryoshka.posOffset;
+        targetPos.x = Mathf.RoundToInt(targetPos.x);
+        targetPos.z = Mathf.RoundToInt(targetPos.z);
+        if (childMatryoshka.size % 2 == 0)
+        {
+            if (targetPos.x % 2 == 0)
+            {
+                targetPos.x += 1;
+            }
+            if (targetPos.z % 2 == 0)
+            {
+                targetPos.z += 1;
+            }
+        }
         targetPos = new Vector3(targetPos.x, transform.position.y, targetPos.z);
         childMatryoshka.MoveTo(targetPos);
         DetachChild(lookDir);
