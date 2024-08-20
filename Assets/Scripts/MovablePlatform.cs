@@ -7,7 +7,15 @@ public class MovablePlatform : MonoBehaviour
     public float downHeight, upHeight;
     private float moveSpeed = 50f;
     Tween moveTween;
-    
+
+    private void OnDisable()
+    {
+        if (moveTween != null)
+        {
+            moveTween.Kill();
+        }
+    }
+
     public void TriggerMove()
     {
         if (moveTween != null)

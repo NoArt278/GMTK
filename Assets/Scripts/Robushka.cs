@@ -57,6 +57,7 @@ public class Robushka : MonoBehaviour
 
     private void OnDisable()
     {
+        transform.DOKill();
         InputManager.playerInput.Player.Release.performed -= ReleaseChildMatryoshka;
     }
 
