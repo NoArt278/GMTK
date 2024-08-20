@@ -7,8 +7,6 @@ public class LevelManager : MonoBehaviour
 {
     public int maxSize;
     [SerializeField] private SidePanel levelCompleteUI;
-    [SerializeField] private GameObject nextLvlBtn;
-    [SerializeField] private TMP_Text lvlClearedText;
     private GameManager gameManager;
 
     private void Awake()

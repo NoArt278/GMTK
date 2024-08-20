@@ -1,12 +1,15 @@
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class SidePanel : MonoBehaviour
 {
-    [SerializeField] private GameObject pauseMenu, clearMenu;
+    [SerializeField] private GameObject pauseMenu, clearMenu, nextLvlBtn;
+    [SerializeField] private TMP_Text lvlClearText;
     [SerializeField] private Slider bgmSlider, sfxSlider;
     private GameManager gameManager;
     private Vector3 inside, outside;
@@ -36,6 +39,12 @@ public class SidePanel : MonoBehaviour
     public void ShowClearUI()
     {
         clearMenu.SetActive(true);
+        // If last level, hide next level button
+        if (SceneManager.GetActiveScene().buildIndex == SceneManager.sceneCountInBuildSettings - 1)
+        {
+            nextLvlBtn.SetActive(false);
+            lvlClearText.text = "All Levels Complete";
+        }
         transform.DOLocalMove(inside,0.5f);
     }
 
