@@ -4,7 +4,6 @@ using UnityEngine.Audio;
 
 public class GameManager : MonoBehaviour
 {
-    public static int maxLevel = 10;
     public static GameManager instance;
     private Coroutine checkIsPlaying;
     [SerializeField] private AudioSource bgm, sfx;
@@ -13,11 +12,12 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null)
+        if (GameManager.instance != null)
         {
             Destroy(gameObject);
+            return;
         }
-        instance = this;
+        GameManager.instance = this;
         DontDestroyOnLoad(gameObject);
     }
 
@@ -58,7 +58,4 @@ public class GameManager : MonoBehaviour
         mixer.SetFloat("BGMCutoff", 22000f);
         checkIsPlaying = null;
     }
-
-    public float bgmVolume { get => bgm.volume; set => bgm.volume = Mathf.Clamp(value, 0, 1); }
-    public float sfxVolume { get => sfx.volume; set => sfx.volume = Mathf.Clamp(value, 0, 1); }
 }
