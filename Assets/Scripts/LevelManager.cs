@@ -58,6 +58,7 @@ public class LevelManager : MonoBehaviour
     public void ExitLevel()
     {
         Time.timeScale = 1.0f;
+        gameManager.ChangeBGM(true);
         SceneManager.LoadScene(0);
     }
 }

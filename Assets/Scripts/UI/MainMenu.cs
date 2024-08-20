@@ -11,10 +11,12 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GameObject activeMenu;
     [SerializeField] private Slider bgmSlider, sfxSlider;
     [SerializeField] private AudioMixer mixer;
+    [SerializeField] private GameManager gameManager;
     private Vector3 inside, outside;
 
     private void Start()
     {
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         inside = activeMenu.transform.localPosition;
         outside = inside - new Vector3(600f,0);
 
@@ -59,6 +61,7 @@ public class MainMenu : MonoBehaviour
 
     public void LoadLevel(int index)
     {
+        gameManager.ChangeBGM(false);
         SceneManager.LoadScene(index);
     }
 

@@ -49,6 +49,18 @@ public class GameManager : MonoBehaviour
         checkIsPlaying = StartCoroutine(CheckStillPlaying(source));
     }
 
+    public void ChangeBGM(bool isMainMenu)
+    {
+        if (isMainMenu)
+        {
+            bgm.clip = menuBGM;
+        } else
+        {
+            bgm.clip = gameBGM;
+        }
+        bgm.Play();
+    }
+
     IEnumerator CheckStillPlaying(AudioSource source)
     {
         while (source.isPlaying)
