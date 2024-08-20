@@ -16,8 +16,8 @@ public class LevelManager : MonoBehaviour
         "Get Me Out",
         "One Step Forward",
         "Alien Crossing",
-        "Rounded Corner",
         "Easy One",
+        "Rounded Corner",
         "Higher Order",
         "3 Body Problem"
     };

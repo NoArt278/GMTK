@@ -63,7 +63,7 @@ public class GameManager : MonoBehaviour
 
     IEnumerator CheckStillPlaying(AudioSource source)
     {
-        while (source.isPlaying)
+        while (source != null && source.isPlaying)
         {
             yield return null;
         }
