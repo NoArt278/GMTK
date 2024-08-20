@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class SidePanel : MonoBehaviour
 {
     [SerializeField] private GameObject pauseMenu, clearMenu, nextLvlBtn;
-    [SerializeField] private TMP_Text lvlClearText;
+    [SerializeField] private TMP_Text lvlClearText, lvlNumText, lvlTitleText;
     [SerializeField] private Slider bgmSlider, sfxSlider;
     private GameManager gameManager;
     private Vector3 inside, outside;
@@ -23,6 +23,9 @@ public class SidePanel : MonoBehaviour
 
         SetBGMVolume(PlayerPrefs.GetFloat("BGMVol", 100));
         SetSFXVolume(PlayerPrefs.GetFloat("SFXVol", 100));
+
+        lvlNumText.text = "Level " + SceneManager.GetActiveScene().buildIndex;
+        lvlTitleText.text = LevelManager.levelTitles[SceneManager.GetActiveScene().buildIndex - 1];
     }
 
     private void OnEnable()

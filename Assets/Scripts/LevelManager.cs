@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -8,6 +9,8 @@ public class LevelManager : MonoBehaviour
     public int maxSize;
     [SerializeField] private SidePanel levelCompleteUI;
     private GameManager gameManager;
+    public static string[] levelTitles = {"Rock Bottom", "Three Musketeers", "Mom Meets Dad", "Watch Your Step",
+                                            "Railing Problem", "Alien Crossing"};
 
     private void Awake()
     {

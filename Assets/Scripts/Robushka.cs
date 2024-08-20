@@ -62,7 +62,7 @@ public class Robushka : MonoBehaviour
 
     private void ReleaseChildMatryoshka(InputAction.CallbackContext context)
     {
-        if (childMatryoshka == null || !isActive || onAction) return;
+        if (childMatryoshka == null || !isActive || onAction || Time.timeScale == 0) return;
 
         // Check for other Robushkas
         List<RaycastHit> hits = Physics.SphereCastAll(
@@ -284,7 +284,7 @@ public class Robushka : MonoBehaviour
 
     void Update()
     {
-        if (onAction) return;
+        if (onAction || Time.timeScale == 0) return;
 
         // Check if the robushka is on a platform
         RaycastHit[] platforms = Physics.SphereCastAll(
