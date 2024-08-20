@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -65,10 +64,33 @@ public class Robushka : MonoBehaviour
     {
         if (childMatryoshka == null || !isActive || onAction) return;
 
+        // Check for other Robushkas
+        List<RaycastHit> hits = Physics.SphereCastAll(
+            transform.position + transform.forward * ((size - 1) * 2 + 1),
+            Mathf.Max(size - 1.5f, 0.5f),
+            Vector3.down,
+            size, defaultMask
+        ).ToList();
+        
+        if (hits.Count > 0)
+        {
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.collider.CompareTag("Player"))
+                {
+                    Debug.Log("Can't release");
+                    sfxSource.clip = cantReleaseSfx;
+                    sfxSource.Play();
+                    levelManager.ActivateCutoff(sfxSource);
+                    return;
+                }
+            }
+        }
+
         float neededSize = childNeededGridSize;
 
         // Check for the left available platforms
-        List<RaycastHit> hits = Physics.SphereCastAll(
+        hits = Physics.SphereCastAll(
             transform.position + transform.forward * ((size - 1) * 2 + 1) + transform.right * 1,
             Mathf.Max(size - 1.5f, 0.5f),
             Vector3.down, 
