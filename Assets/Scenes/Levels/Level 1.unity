@@ -2638,8 +2638,7 @@ MonoBehaviour:
     A/D to rotate'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a1ccbd081aac3fb43bb479e026967888, type: 2}
-  m_sharedMaterial: {fileID: -3106726557497358123, guid: a1ccbd081aac3fb43bb479e026967888,
-    type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 12ff9927541201442ba7ec41f6343d13, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -2728,7 +2727,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -3106726557497358123, guid: a1ccbd081aac3fb43bb479e026967888, type: 2}
+  - {fileID: 2100000, guid: 12ff9927541201442ba7ec41f6343d13, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
