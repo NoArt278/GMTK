@@ -9,8 +9,18 @@ public class LevelManager : MonoBehaviour
     public int maxSize;
     [SerializeField] private SidePanel levelCompleteUI;
     private GameManager gameManager;
-    public static string[] levelTitles = {"Rock Bottom", "Three Musketeers", "Mom Meets Dad", "Watch Your Step",
-                                            "Railing Problem", "Alien Crossing"};
+    public static string[] levelTitles = {
+        "Rock Bottom", 
+        "Mom Meets Dad", 
+        "No Pressure", 
+        "Get Me Out",
+        "One Step Forward",
+        "Alien Crossing",
+        "Rounded Corner",
+        "Easy One",
+        "Higher Order",
+        "3 Body Problem"
+    };
 
     private void Awake()
     {
