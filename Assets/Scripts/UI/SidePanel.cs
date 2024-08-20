@@ -13,6 +13,7 @@ public class SidePanel : MonoBehaviour
     [SerializeField] private Slider bgmSlider, sfxSlider;
     private GameManager gameManager;
     private Vector3 inside, outside;
+    private Tween ongoingTween;
     [SerializeField] private AudioMixer mixer;
     // Start is called before the first frame update
     void Start()
@@ -72,20 +73,30 @@ public class SidePanel : MonoBehaviour
 
     public void ShowPauseUI()
     {
+        if (ongoingTween != null)
+        {
+            ongoingTween.Complete();
+        }
         if (pauseMenu.activeSelf || clearMenu.activeSelf) return;
         pauseMenu.SetActive(true);
-        transform.DOLocalMove(inside, 0.5f).OnComplete(() =>
+        ongoingTween = transform.DOLocalMove(inside, 0.5f).OnComplete(() =>
         {
             Time.timeScale = 0;
+            ongoingTween = null;
         });
     }
 
     public void HidePauseUI()
     {
+        if(ongoingTween != null)
+        {
+            ongoingTween.Complete();
+        }
         Time.timeScale = 1f;
-        transform.DOLocalMove(outside, 0.5f).OnComplete(() =>
+        ongoingTween = transform.DOLocalMove(outside, 0.5f).OnComplete(() =>
         {
             pauseMenu.SetActive(false);
+            ongoingTween = null;
         });
     }
 
