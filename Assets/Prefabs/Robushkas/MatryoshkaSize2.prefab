@@ -57,7 +57,7 @@ MonoBehaviour:
   fallSfx: {fileID: 8300000, guid: a8040daadd2ef2e4e92b4c65df56cada, type: 3}
   enterSfx: {fileID: 8300000, guid: de1cd9fce64f69047a24be8fd5f4a1b7, type: 3}
   exitSfx: {fileID: 8300000, guid: 594418d49ba9f29429786d726136fca2, type: 3}
-  cantReleaseSfx: {fileID: 8300000, guid: a8040daadd2ef2e4e92b4c65df56cada, type: 3}
+  cantReleaseSfx: {fileID: 8300000, guid: 23a767b351f7f5049b0f55ccf0c5a77a, type: 3}
 --- !u!54 &5252566559814096322
 Rigidbody:
   m_ObjectHideFlags: 0
